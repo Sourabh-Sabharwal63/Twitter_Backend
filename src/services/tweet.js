@@ -41,7 +41,7 @@ class TweetService {
       const HashtagsList = content.match(/#\b[a-zA-Z0-9_]+/g);
       console.log("HashtagsList", HashtagsList);
 
-      const tweet = await this.tweetRepository.createTweet({
+      const tweet = await this.tweetRepository.create({
         ...data,
         hashTags: HashtagsList,
       });
@@ -73,6 +73,7 @@ class TweetService {
 
 
     } catch (error) {
+      console.log("error.message = ",error.message)
       console.log("Something went wrong on createTweet");
     }
 
