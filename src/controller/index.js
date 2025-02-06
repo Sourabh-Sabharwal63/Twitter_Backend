@@ -1,4 +1,9 @@
-const {createTweet}=require("./tweetController")
+const TweetController=require("./tweetController");
+const LikeController=require("./likeController");
+const RepostsController=require("./repostsController");
+
 module.exports={
-  createTweet
-}
+  TweetController,
+  LikeController,
+  RepostsController
+};

@@ -1,4 +1,5 @@
 module.exports={
   TweetService:require("./tweet"),
-  LikeService:require("./Like")
+  LikeService:require("./Like"),
+  RepostsService:require("./RepostService")
 }

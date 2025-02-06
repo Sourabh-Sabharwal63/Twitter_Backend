@@ -2,5 +2,6 @@ module.exports={
   Tweet:require("./Tweet"),
   Hashtags:require("./Hashtags"),
   Like:require("./Like"),
-  User:require("./user")
+  User:require("./user"),
+  Reposts:require("./RepostsModel"),
 }

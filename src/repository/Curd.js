@@ -1,5 +1,5 @@
 class CURD {
-  constructor(model ) {
+  constructor(model) {
     this.model = model;
   }
   async create(data) {
@@ -11,36 +11,38 @@ class CURD {
     }
   }
 
-  async get(ID){
+  async get(ID) {
     try {
-      const response=await this.model.findById(ID);
+      const response = await this.model.findById(ID);
       return response;
     } catch (error) {
       throw error;
     }
   }
 
-  async destroy(ID){
+  async destroy(ID) {
     try {
-      const response=await this.model.findByIdAndDelete(ID);
+      const response = await this.model.findByIdAndDelete(ID);
+      console.log("delete response = ",response);
       return response;
     } catch (error) {
       throw error;
     }
   }
-
-  async getAll(){
+  
+ 
+  async getAll() {
     try {
-      const list=await this.model.find();
+      const list = await this.model.find();
       return list;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateById(ID,data){
+  async updateById(ID, data) {
     try {
-      const response=await this.model.findByIdAndUpdate(ID,data);
+      const response = await this.model.findByIdAndUpdate(ID, data);
       return response;
     } catch (error) {
       throw error;
@@ -48,5 +50,4 @@ class CURD {
   }
 }
 
-
-module.exports=CURD;
+module.exports = CURD;

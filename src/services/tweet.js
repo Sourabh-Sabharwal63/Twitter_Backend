@@ -1,38 +1,18 @@
-const { TweetRepository, HashtagsRepository } = require("../repository");
+const {
+  TweetRepository,
+  HashtagsRepository,
+  RepostsRepository,
+} = require("../repository");
 
 class TweetService {
   constructor(
     tweetRepository = new TweetRepository(),
-    hashtagsRepository = new HashtagsRepository()
+    hashtagsRepository = new HashtagsRepository(),
+    repostsRepository = new RepostsRepository()
   ) {
     this.tweetRepository = tweetRepository;
     this.hashtagsRepository = hashtagsRepository;
-  }
-  async getValidTags(HashtagsList, tweet) {
-    try {
-      const BulkHashtag = [];
-      await Promise.all(
-        HashtagsList.map(async (tag) => {
-          console.log("inside forEach");
-          const isAvailable = await this.hashtagsRepository.getHashtagByName(
-            tag
-          );
-          console.log("isAvailable", isAvailable);
-          if (!isAvailable) {
-            BulkHashtag.push({
-              text: tag,
-              tweets: [tweet.id],
-              Ranking: 0,
-            });
-          }
-        })
-      );
-
-      console.log("BulkHashtag.length = ", BulkHashtag.length);
-      return BulkHashtag;
-    } catch (error) {
-      console.log("Something went wrong on getValidTags");
-    }
+    this.repostsRepository = repostsRepository;
   }
 
   async createTweet(data) {
@@ -45,7 +25,7 @@ class TweetService {
         ...data,
         hashTags: HashtagsList,
       });
-      console.log("tweet = ",tweet)
+      console.log("tweet = ", tweet);
 
       const presentHashtag = await this.hashtagsRepository.getHashtagByName(
         HashtagsList
@@ -65,51 +45,50 @@ class TweetService {
         BulkHashTag
       );
       console.log("hashtagBulkResponse", hashtagBulkResponse);
-      
+
       presentHashtag.forEach(async (tag) => {
         tag.tweets.push(tweet._id);
         tag.save();
       });
-
-
     } catch (error) {
-      console.log("error.message = ",error.message)
+      console.log("error.message = ", error.message);
       console.log("Something went wrong on createTweet");
     }
-
   }
 
-  async extractHashtags(str) {
+  async deleteTweet(tweetId) {
     try {
-      const list = [];
-      let n = str.length,
-        i = 0;
-      while (i < n) {
-        let char = str.charCodeAt(i);
-        if (char == 35) {
-          let word = "";
-          word = word + String.fromCharCode(char);
-          i++;
-          char = str.charCodeAt(i);
-          while (
-            (char >= 65 && char <= 90) ||
-            (char >= 97 && char <= 122) ||
-            char == 95
-          ) {
-            word = word + String.fromCharCode(char);
-            if (i + 1 == n || str.charCodeAt(i + 1) == 35) {
-              break;
-            }
-            i++;
-            char = str.charCodeAt(i);
-          }
-          word.length > 1 && list.push(word);
-        }
-        i++;
+      const response = await this.tweetRepository.destroy(tweetId);
+      if (response) {
+        const repostsResponse =
+          await this.repostsRepository.destroyAllRepostsWithTweetId(
+            response._id
+          );
+        console.log("repostsResponse", repostsResponse);
       }
+      return response;
+    } catch (error) {
+      console.log("something went wrong on Service layer in delete Tweet");
+      throw error;
+    }
+  }
+
+  async getAllReposts(tweetId){
+try {
+  const list =await this.repostsRepository.findAllWithTweetID(tweetId);
+  return list;
+} catch (error) {
+  console.log("something went wrong on Service layer in getAllReposts",error.message);
+  throw error;
+}
+  }
+
+  async getUserAllTweet(userId){
+    try {
+      const list=await this.tweetRepository.getUserAllTweet(userId);
       return list;
     } catch (error) {
-      console.log("something went wrong  in Service Layer on TweetService");
+      throw error;
     }
   }
 }
