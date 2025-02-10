@@ -12,9 +12,9 @@ const UserSchema = new Schema({
 
 UserSchema.pre("save", async function (next) {
   try {
-    const salt = await bcrypt.genSalt(SaltRound);
-    const plainPassword = this.password;
-    bcrypt.hash(plainPassword, salt);
+    console.log("SaltRound = ", typeof Number(SaltRound));
+    const salt = await bcrypt.genSalt(Number(SaltRound));
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error);
@@ -33,9 +33,7 @@ UserSchema.methods.createJwt = async function () {
   try {
     return jwt.sign(
       {
-        email: this.email,
-        userName: this.userName,
-        password: this.password,
+        id: this._id,
       },
       Signature
     );

@@ -4,7 +4,7 @@ const createLike=async(req,res)=>{
   try {
     console.log("req.query = ",req.query);
     const {modelName,modelID}=req.query;
-   const userId="679e3d78655d94c7cfb971cd";
+   const userId=req.user._id;
     const response=await LikeService.toggleLike(modelName,modelID,userId);
     const stat=response? "Like is done" :"Like is removed";
 

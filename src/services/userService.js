@@ -41,19 +41,19 @@ class UserService {
       data.email
         ? (user = await this.userRepository.getUserByEmail(data.email))
         : (user = await this.userRepository.getUserByUserName(data.userName));
-       
+
       if (!user) {
         throw new Error("User not available");
       }
-
       const isValid = await user.ComparePassword(data.password);
       if (!isValid) {
         throw new Error("User is not valid");
       }
-      
-      await user.createJwt();
-
-
-    } catch (error) {}
+      return await user.createJwt();
+    } catch (error) {
+      throw error;
+    }
   }
 }
+
+module.exports=new UserService();
